@@ -1,61 +1,127 @@
-import datetime
 from group import *
-from exception import *
+# from .exception import *
 from sport import *
+from member import *
+# from .dev import *
+
+FRONT = f"""
 
 
-NOW = datetime.datetime.now().year
-WELCOME = "HELLO THERE. VERY NICE TO SEE YOU. WHAT WOULD YOU LIKE TO DO\n\n\n\n"
-WELCOME += "PLEASE PICK YOUR OPTION: "
 
-OPTIONS = "   SIGN member up\n   Remove a member from a sport \n   Remove a sport from the system \n  [7] See a list of all members\n".upper()
+                ##########################################################################################
+                #                           Verkefni 6 í gagnaskipan, notkun ...                         #
+                # -------------------------------------------------------------------------------------- #
+                #                          Atli Þór & Wentzel Copyright 2019 (c)                         #
+                ##########################################################################################
+               
+                """
 
-def Show_options():
-    print("[1] REGISTER NEW SPORT")
-    print("[2] REGISTER NEW MEMBER")
-    print("[3] SIGN MEMBER UP FOR A SPORT")
-    print("[4] REMOVE MEMBER FROM A SPORT")
-    print("[4] USER OPTIONS: \n")
-    print(OPTIONS)
+FRONT += "                   -----------------VERY NICE TO SEE YOU-----------------\n\n"
 
 
-def do_again():
-    x = input("Wanna try again [Y/n]").upper()
-    if x == "N":
-        quit()
-    elif x == "Y":
-        main()
+class SportDatabase():
+    def __init__(self):
+        print(FRONT)
+        print()
+        self.s = Sports()
+        self.m = Member()
+        self.g = Group()
+
+    def options(self):
+        print()
+        print("----NEW ITEMS----")
+        print("[1] REGISTER NEW SPORT")
+        print("[2] REGISTER A GROUP")
+        print("[3] REGISTER NEW MEMBER")
+        print("[4] SIGN MEMBER UP FOR A SPORT\n")
+        print("----REMOVING ITEMS----")
+        print("[5] REMOVE MEMBER FROM A SPORT")
+        print("[6] REMOVE A SPORT FROM THE SYSTEM \n")
+        print("----RETRIEVE DATA----")
+        print("[7] LIST OF MEMBERS, PICK IN WHICH ORDER")  # order by name, age or sport
+        print("[8] FIND A MEMBER")  # name, phone, email, age
+        print("[9] SELECT A MEMBER AND GET ALL INFO, INCLUDING SPORTS")
+        print("[10] SEE A LIST OF ALL SPORTS")
+        print("[11] SELECT A SPORT AND SEE LIST OF USERS IN THAT SPORT")
+        print()
 
 
-def validate_input(option):
+    def do_again(self):
+        '''Offers the user to do again or quit after each action'''
 
-    try:
-        int(option)
-        return int(option)
-    except ValueError:
-        print("Input should be an integer")
-        do_again()
+        x = input("You want to continue [Y/n]: ").upper()
+        if x == "N":
+            quit()
+        elif x == "Y":
+            self.main()
+        else:
+            print(f"{x} is not valid. Try again. ")
+            self.do_again()
 
 
-s = Sports()
+    def validate_input(self, option):
+        '''Validates if input is an integer'''
 
-def main():
-    print(WELCOME)
-    print()
-    Show_options()
-    option = input("ENTER YOUR CHOICE: ")
-    option = validate_input(option)
-    if 0 < option <8:
-        if option  == 1:
-            name = input("Enter the sportname to be added: ")
-            s.register_sport(name)
-            main()
+        try:
+            int(option)
+            return option
+        except ValueError:
+            print("Input should be an integer")
+            self.do_again()
 
-        elif option == 7:
-            print("arara")
-            print(s)
-    else:
-        print("Invalid number man!")
-        do_again()
 
-main()
+    def main(self):
+        self.options()
+        option = str(input("ENTER YOUR CHOICE: \n"))
+        option = self.validate_input(option)
+        if option in "1,3,4,5,6,7,8,9,10,11":
+            if option == "1":
+                self.s.register_sport()
+                self.do_again()
+
+            elif option == "2":
+                #TODO: Wentzel implementar
+                pass
+
+            elif option == "3":
+                self.m.register_member()
+                self.do_again()
+
+            elif option == "4":
+                #TODO implement
+                self.s.sign_for_sport() #spurning hvort þetta ætti að vera s eða m
+                self.do_again()
+
+            elif option == "5":
+                #TODO: implement
+                self.s.remove_member_from_sport() #spurning hvort þetta ætti að vera s eða m
+                self.do_again()
+
+            elif option == "6":
+                self.s.remove_sport() 
+                self.do_again()
+
+            elif option == "7":
+                #TODO: implement sorting by sports
+                self.m.get_ordered_list() #komið með aldur og nafn
+                self.do_again()
+
+            elif option == "8":
+                #temp
+                self.m.find_member()
+
+            elif option == "9":
+                pass
+
+            elif option == "10":
+                print(self.s)
+                self.do_again()
+
+            elif option == "11":
+                pass
+
+            else:
+                print("Invalid number man!")
+                self.do_again()
+
+        self.main()
